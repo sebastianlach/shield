@@ -1,0 +1,56 @@
+# python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# python eggs
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+
+# environments
+.env
+.venv
+env/
+venv/
+
+# caching
+.cache
+
+# extensions
+*.so
+
+# distribution / packaging / building
+build/
+dist/
+sdist/
+wheels/
+
+# manifest
+MANIFEST
+
+# testing
+nosetests.xml
+.tox/
+
+# coverage
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# translations
+*.mo
+*.pot
+
+# logging
+*.log
+
+# documentation
+docs/build/
+
+# databases
+*.sqlite3
+*.sqlite
+
