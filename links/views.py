@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import uuid4
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -165,6 +164,6 @@ class ReferenceCheckView(View):
             if reference.token != token_hash(form.cleaned_data['password']):
                 form.add_error(None, 'Invalid password')
             else:
-                return HttpResponseRedirect('/success/')
+                return HttpResponseRedirect(reference.url)
 
         return render(request, self.template_name, {'form': form})

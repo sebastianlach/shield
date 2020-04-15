@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from uuid import uuid4
 
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import (
     GenericForeignKey,
@@ -42,10 +43,20 @@ class Reference(models.Model):
     def expired(self):
         return (timezone.now() - self.timestamp) > timedelta(hours=24)
 
+    @property
+    def url(self):
+        if self.entity_type == ContentType.objects\
+                .get(app_label='links', model='link'):
+            return self.entity.url
+
+        if self.entity_type == ContentType.objects\
+                .get(app_label='links', model='file'):
+            return '{}{}'.format(settings.MEDIA_URL, self.entity.content)
+
 
 class File(models.Model):
     """File model."""
-    content = models.FileField(upload_to='vars/resources/')
+    content = models.FileField(upload_to='resources/')
     created_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='file')
 
