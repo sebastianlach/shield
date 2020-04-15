@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="span4">
+    <h2>Available links</h2>
+        Lorem ipsum
+    <p>
+</div>
+
+<div class="span8">
+    <h2>List of links</h2>
+
+    <p>
+        <ul>
+        {% for link in object_list %}
+            <li>{{ link }}
+        {% empty %}
+            <li>No links yet.</li>
+        {% endfor %}
+        </ul>
+    </p>
+
+</div>
+{% endblock %}
