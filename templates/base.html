@@ -28,16 +28,11 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
           <a class="brand" href="/">Shield</a>
           <div class="nav-collapse">
             <ul class="nav">
               <li>
-                  <a href="{% url 'resources_links_list' %}">{{ url }}Links</a>
+                <a href="{% url 'resources_links_list' %}">Links</a>
               </li>
               <li>
                 <a href="{% url 'resources_files_list' %}">Files</a>
@@ -45,6 +40,11 @@
               <li>
                 <a href="{% url 'resources_references_list' %}">Refrences</a>
               </li>
+              {% if request.user.is_authenticated %}
+              <li>
+                <a href="{% url 'logout' %}">Log out</a>
+              </li>
+              {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
         </div>

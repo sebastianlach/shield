@@ -46,9 +46,8 @@ urlresources.append(
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
-   # url(r'^login/$', views.login, name='login'),
-   # url(r'^logout/$', views.logout, {'next_page': '/'}, name='logout'),
-    path(r'login/', views.LoginView.as_view()),
+    path(r'login/', views.LoginView.as_view(), name='login'),
+    path(r'logout/', views.LogoutView.as_view(), name='logout'),
     path(r'admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
