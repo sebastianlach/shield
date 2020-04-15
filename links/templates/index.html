@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="span4">
+    <h2>Access requested resource</h2>
+        In order to access requested resources you have to provide correct password.
+    <p>
+</div>
+
+<div class="span8">
+
+    {% if reference %}
+        <a href="{% url 'resources_references_check' reference.rid %}">
+            {{ reference }}
+        </a>
+        {{ token }}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+
+</div>
+{% endblock %}

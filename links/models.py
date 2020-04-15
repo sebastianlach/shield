@@ -20,13 +20,13 @@ RESOURCES = (
 class Reference(models.Model):
     """Reference model."""
     rid = models.UUIDField(default=uuid4, unique=True)
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now=True)
     token = models.CharField(max_length=32)
     entity_id = models.PositiveIntegerField()
     entity_type = models.ForeignKey(
-            ContentType,
-            limit_choices_to=bitwise_or(RESOURCES),
-            on_delete=models.CASCADE,
+        ContentType,
+        limit_choices_to=bitwise_or(RESOURCES),
+        on_delete=models.CASCADE,
     )
     entity = GenericForeignKey('entity_type', 'entity_id')
 
@@ -44,23 +44,19 @@ class Reference(models.Model):
 
 class File(models.Model):
     """File model."""
-    name = models.CharField(max_length=255, blank=True, null=True)
     content = models.FileField(upload_to='vars/resources/')
     created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='file')
 
     def __str__(self):
-        return "{} #{}: {}".format(self.__class__.__name__, self.id, self.name)
+        return "{} #{}".format(self.__class__.__name__, self.id)
 
 
 class Link(models.Model):
     """Link model."""
-    name = models.CharField(max_length=255, blank=True, null=True)
     url = models.URLField()
     created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='link')
 
     def __str__(self):
-        return "{} #{}: {}".format(self.__class__.__name__, self.id, self.name)
+        return "{} #{}".format(self.__class__.__name__, self.id)

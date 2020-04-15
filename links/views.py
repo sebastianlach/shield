@@ -9,8 +9,9 @@ from django.views.generic import View, ListView, TemplateView
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from .forms import FileForm, LinkForm, LinkFileForm, ReferenceCheckForm
+from .helpers import generate_token
 from .models import File, Link, Reference
-from .forms import FileForm, LinkForm, ReferenceCheckForm
 from .serializers import (
     LinkSerializer,
     FileSerializer,
@@ -22,7 +23,43 @@ class IndexView(LoginRequiredMixin, TemplateView):
     """
     Index view.
     """
-    template_name = "base.html"
+    template_name = "index.html"
+
+    def get(self, request):
+        form = LinkFileForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        token = None
+        entity = None
+
+        form = LinkFileForm(request.POST, request.FILES)
+        if form.is_valid():
+
+            token = generate_token()
+
+            if form.cleaned_data['url']:
+                link_form = LinkForm(request.POST)
+                entity = link_form.save()
+                reference = Reference()
+                reference.entity = entity
+                reference.token = make_password(token)
+                reference.save()
+
+            if form.cleaned_data['content']:
+                file_form = FileForm(request.POST, request.FILES)
+                entity = file_form.save()
+                reference = Reference()
+                reference.entity = entity
+                reference.token = make_password(token)
+                reference.save()
+
+        context = dict(
+            form=form,
+            token=token,
+            reference=reference,
+        )
+        return render(request, self.template_name, context)
 
 
 class LinkViewSet(viewsets.ModelViewSet):
