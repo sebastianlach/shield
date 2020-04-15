@@ -1,16 +1,20 @@
 from datetime import datetime
 from uuid import uuid4
 
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseGone
+from django.http import (
+    HttpResponse,
+    HttpResponseNotFound,
+    HttpResponseGone,
+    HttpResponseRedirect,
+)
 from django.shortcuts import render
 from django.views.generic import View, ListView, TemplateView
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from .forms import FileForm, LinkForm, LinkFileForm, ReferenceCheckForm
-from .helpers import generate_token
+from .helpers import generate_token, token_hash
 from .models import File, Link, Reference
 from .serializers import (
     LinkSerializer,
@@ -43,7 +47,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
                 entity = link_form.save()
                 reference = Reference()
                 reference.entity = entity
-                reference.token = make_password(token)
+                reference.token = token_hash(token)
                 reference.save()
 
             if form.cleaned_data['content']:
@@ -51,7 +55,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
                 entity = file_form.save()
                 reference = Reference()
                 reference.entity = entity
-                reference.token = make_password(token)
+                reference.token = token_hash(token)
                 reference.save()
 
         context = dict(
@@ -147,15 +151,20 @@ class ReferenceCheckView(View):
         reference = self.model.objects.get(rid=rid)
         if reference.expired:
             return HttpResponseGone()
+
         form = self.form_class(instance=reference)
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, rid, *args, **kwargs):
+        reference = self.model.objects.get(rid=rid)
+        if reference.expired:
+            return HttpResponseGone()
+
         form = self.form_class(request.POST)
         if form.is_valid():
-            reference = self.model.objects.get(rid=form.cleaned_data['rid'])
-            if reference.expired:
-                return HttpResponseGone()
-            # TODO return HttpResponseRedirect('/success/')
+            if reference.token != token_hash(form.cleaned_data['password']):
+                form.add_error(None, 'Invalid password')
+            else:
+                return HttpResponseRedirect('/success/')
 
         return render(request, self.template_name, {'form': form})

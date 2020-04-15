@@ -4,12 +4,14 @@ from .models import File, Link, Reference
 
 
 class FileForm(forms.ModelForm):
+
     class Meta:
         model = File
         fields = ['content', ]
 
 
 class LinkForm(forms.ModelForm):
+
     class Meta:
         model = Link
         fields = ['url', ]
