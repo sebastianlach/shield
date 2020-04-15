@@ -7,6 +7,7 @@ from django.contrib.contenttypes.fields import (
     GenericForeignKey,
     GenericRelation,
 )
+from django.utils import timezone
 
 from .helpers import bitwise_or
 
@@ -39,7 +40,7 @@ class Reference(models.Model):
 
     @property
     def expired(self):
-        return (datetime.now() - self.timestamp) > timedelta(hours=24)
+        return (timezone.now() - self.timestamp) > timedelta(hours=24)
 
 
 class File(models.Model):
