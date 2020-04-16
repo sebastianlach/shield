@@ -6,13 +6,13 @@ from .models import Link, File, Reference
 class LinkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Link
-        fields = ('id', 'name', 'created_at', 'updated_at')
+        fields = ('id', 'created_at')
 
 
 class FileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = File
-        fields = ('id', 'name', 'created_at', 'updated_at')
+        fields = ('id', 'created_at')
 
 
 class ReferenceSerializer(serializers.ModelSerializer):

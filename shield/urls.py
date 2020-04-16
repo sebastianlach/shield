@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.contrib.auth import views
 from django.urls import path
 from rest_framework import routers
+from rest_framework.authtoken import views as token_views
 
 from links.views import (
     IndexView,
@@ -52,6 +53,6 @@ urlpatterns = [
     path(r'logout/', views.LogoutView.as_view(), name='logout'),
     path(r'admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
-    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-] + urlresources \
-    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r'^api/tokens', token_views.obtain_auth_token),
+] + urlresources
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
