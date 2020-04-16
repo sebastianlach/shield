@@ -79,3 +79,8 @@ class Redirect(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
     datestamp = models.DateField(auto_now=True)
+
+
+class UserAgent(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    agent = models.CharField(max_length=255)

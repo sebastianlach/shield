@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import File, Link, Reference, Redirect
+from .models import File, Link, Reference, Redirect, UserAgent
 
 
 @admin.register(File)
@@ -20,4 +20,9 @@ class ReferenceAdmin(admin.ModelAdmin):
 
 @admin.register(Redirect)
 class RedirectAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UserAgent)
+class UserAgentAdmin(admin.ModelAdmin):
     pass
