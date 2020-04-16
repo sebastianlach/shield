@@ -14,7 +14,7 @@ from rest_framework.response import Response
 
 from .forms import FileForm, LinkForm, LinkFileForm, ReferenceCheckForm
 from .helpers import generate_token, token_hash
-from .models import File, Link, Reference
+from .models import File, Link, Reference, Redirect
 from .serializers import (
     LinkSerializer,
     FileSerializer,
@@ -164,6 +164,10 @@ class ReferenceCheckView(View):
             if reference.token != token_hash(form.cleaned_data['password']):
                 form.add_error(None, 'Invalid password')
             else:
+                redirect = Redirect()
+                redirect.user = request.user
+                redirect.reference = reference
+                redirect.save()
                 return HttpResponseRedirect(reference.url)
 
         return render(request, self.template_name, {'form': form})
