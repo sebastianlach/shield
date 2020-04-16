@@ -8,8 +8,10 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import View, ListView, TemplateView
-from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .forms import FileForm, LinkForm, LinkFileForm, ReferenceCheckForm
@@ -130,3 +132,49 @@ class ReferenceCheckView(View):
                 return HttpResponseRedirect(reference.url)
 
         return render(request, self.template_name, {'form': form})
+
+
+class ReferencesView(APIView):
+    """
+    API endpoint for adding new links/files.
+    """
+
+    def post(self, request, format=None):
+        token = None
+
+        form = LinkFileForm(request.POST, request.FILES)
+        if form.is_valid():
+
+            token = generate_token()
+
+            if form.cleaned_data['url']:
+                link_form = LinkForm(request.POST)
+                link_form.instance.user = request.user
+                entity = link_form.save()
+                reference = Reference()
+                reference.user = request.user
+                reference.entity = entity
+                reference.token = token_hash(token)
+                reference.save()
+
+            if form.cleaned_data['content']:
+                file_form = FileForm(request.POST, request.FILES)
+                file_form.instance.user = request.user
+                entity = file_form.save()
+                reference = Reference()
+                reference.user = request.user
+                reference.entity = entity
+                reference.token = token_hash(token)
+                reference.save()
+
+        else:
+            return Response(
+                {'errors': dict(form.errors.items())},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        context = dict(
+            token=token,
+            url=reverse('resources_references_check', args=[reference.rid]),
+        )
+        return Response(context)

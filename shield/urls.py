@@ -13,6 +13,7 @@ from links.views import (
     FileListView,
     ReferenceListView,
     ReferenceCheckView,
+    ReferencesView,
 )
 
 
@@ -44,7 +45,8 @@ urlpatterns = [
     path(r'login/', views.LoginView.as_view(), name='login'),
     path(r'logout/', views.LogoutView.as_view(), name='logout'),
     path(r'admin/', admin.site.urls),
-    url(r'^api/tokens', token_views.obtain_auth_token),
+    url(r'^api/tokens/', token_views.obtain_auth_token),
+    url(r'^api/references/', ReferencesView.as_view()),
     url(r'^api/', include(router.urls)),
 ] + urlresources
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
