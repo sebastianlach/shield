@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     HttpResponse,
     HttpResponseNotFound,
-    HttpResponseGone,
     HttpResponseRedirect,
 )
 from django.shortcuts import render
@@ -13,6 +12,7 @@ from django.views.generic import View, ListView, TemplateView
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from .forms import FileForm, LinkForm, LinkFileForm, ReferenceCheckForm
 from .helpers import generate_token, token_hash
@@ -110,7 +110,7 @@ class ReferenceCheckView(View):
     def get(self, request, rid):
         reference = self.model.objects.get(rid=rid)
         if reference.expired:
-            return HttpResponseGone()
+            return HttpResponseNotFound()
 
         form = self.form_class(instance=reference)
         return render(request, self.template_name, {'form': form})
@@ -118,7 +118,7 @@ class ReferenceCheckView(View):
     def post(self, request, rid, *args, **kwargs):
         reference = self.model.objects.get(rid=rid)
         if reference.expired:
-            return HttpResponseGone()
+            return HttpResponseNotFound()
 
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -126,7 +126,6 @@ class ReferenceCheckView(View):
                 form.add_error(None, 'Invalid password')
             else:
                 redirect = Redirect()
-                redirect.user = request.user
                 redirect.reference = reference
                 redirect.save()
                 return HttpResponseRedirect(reference.url)
@@ -175,6 +174,39 @@ class ReferencesView(APIView):
 
         context = dict(
             token=token,
-            url=reverse('references_check', args=[reference.rid]),
+            url=reverse('api_reference', args=[reference.rid]),
         )
         return Response(context)
+
+
+class ReferenceView(APIView):
+    """
+    API endpoint for accessing links/files.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request, rid, format=None):
+        reference = Reference.objects.get(rid=rid)
+        if reference.expired:
+            return Response(
+                {'errors': 'reference expired'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        form = ReferenceCheckForm(request.POST)
+        if form.is_valid():
+            if reference.token == token_hash(form.cleaned_data['password']):
+                redirect = Redirect()
+                redirect.reference = reference
+                redirect.save()
+                return HttpResponseRedirect(reference.url)
+            else:
+                return Response(
+                    {'errors': 'invalid password'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+        else:
+            return Response(
+                {'errors': dict(form.errors.items())},
+                status=status.HTTP_400_BAD_REQUEST
+            )

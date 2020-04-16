@@ -14,6 +14,7 @@ from links.views import (
     ReferenceListView,
     ReferenceCheckView,
     ReferencesView,
+    ReferenceView,
 )
 
 
@@ -46,6 +47,8 @@ urlpatterns = [
     path(r'logout/', views.LogoutView.as_view(), name='logout'),
     path(r'admin/', admin.site.urls),
     url(r'^api/tokens/', token_views.obtain_auth_token),
+    url(r'^api/references/(?P<rid>[-\w]+)/', ReferenceView.as_view(),
+        name='api_reference'),
     url(r'^api/references/', ReferencesView.as_view()),
     url(r'^api/', include(router.urls)),
 ] + urlresources
