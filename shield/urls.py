@@ -40,7 +40,7 @@ urlresources = [
 
 urlresources.append(
     url(
-        r'^resources/references/(?P<rid>[-\w]+).html',
+        r'^references/(?P<rid>[-\w]+)/',
         ReferenceCheckView.as_view(),
         name="resources_references_check"
     )
