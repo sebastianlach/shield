@@ -34,7 +34,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         token = None
-        entity = None
+        reference = None
 
         form = LinkFileForm(request.POST, request.FILES)
         if form.is_valid():
