@@ -34,10 +34,9 @@ class Reference(models.Model):
     entity = GenericForeignKey('entity_type', 'entity_id')
 
     def __str__(self):
-        return "[{}:{}] {}".format(
+        return "{} #{}".format(
             self.entity_type.model_class().__name__,
             self.entity_id,
-            str(self.entity)
         )
 
     @property
@@ -62,9 +61,6 @@ class File(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='file')
 
-    def __str__(self):
-        return "{} #{}".format(self.__class__.__name__, self.id)
-
 
 class Link(models.Model):
     """Link model."""
@@ -72,9 +68,6 @@ class Link(models.Model):
     url = models.URLField()
     created_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='link')
-
-    def __str__(self):
-        return "{} #{}".format(self.__class__.__name__, self.id)
 
 
 class Redirect(models.Model):
