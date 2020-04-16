@@ -14,17 +14,9 @@ from links.views import (
     ReferenceListView,
     ReferenceCheckView,
 )
-from links.views import (
-    FileViewSet,
-    LinkViewSet,
-    StatisticsViewSet,
-)
 
 
 router = routers.DefaultRouter()
-router.register(r'files', FileViewSet)
-router.register(r'links', LinkViewSet)
-router.register(r'statistics', StatisticsViewSet)
 
 urlresources = [
     url(
@@ -52,7 +44,7 @@ urlpatterns = [
     path(r'login/', views.LoginView.as_view(), name='login'),
     path(r'logout/', views.LogoutView.as_view(), name='logout'),
     path(r'admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)),
     url(r'^api/tokens', token_views.obtain_auth_token),
+    url(r'^api/', include(router.urls)),
 ] + urlresources
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

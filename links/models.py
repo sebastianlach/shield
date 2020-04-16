@@ -22,6 +22,7 @@ RESOURCES = (
 class Reference(models.Model):
     """Reference model."""
     rid = models.UUIDField(default=uuid4, unique=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
     token = models.CharField(max_length=32)
     entity_id = models.PositiveIntegerField()
@@ -56,6 +57,7 @@ class Reference(models.Model):
 
 class File(models.Model):
     """File model."""
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     content = models.FileField(upload_to='resources/')
     created_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='file')
@@ -66,6 +68,7 @@ class File(models.Model):
 
 class Link(models.Model):
     """Link model."""
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     url = models.URLField()
     created_at = models.DateTimeField(auto_now=True)
     references = GenericRelation(Reference, related_query_name='link')

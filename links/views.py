@@ -15,16 +15,11 @@ from rest_framework.response import Response
 from .forms import FileForm, LinkForm, LinkFileForm, ReferenceCheckForm
 from .helpers import generate_token, token_hash
 from .models import File, Link, Reference, Redirect
-from .serializers import (
-    LinkSerializer,
-    FileSerializer,
-    ReferenceSerializer,
-)
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
     """
-    Index view.
+    Main view with form for adding references.
     """
     template_name = "index.html"
 
@@ -43,16 +38,20 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
             if form.cleaned_data['url']:
                 link_form = LinkForm(request.POST)
+                link_form.instance.user = request.user
                 entity = link_form.save()
                 reference = Reference()
+                reference.user = request.user
                 reference.entity = entity
                 reference.token = token_hash(token)
                 reference.save()
 
             if form.cleaned_data['content']:
                 file_form = FileForm(request.POST, request.FILES)
+                file_form.instance.user = request.user
                 entity = file_form.save()
                 reference = Reference()
+                reference.user = request.user
                 reference.entity = entity
                 reference.token = token_hash(token)
                 reference.save()
@@ -65,82 +64,42 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class LinkViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that handles links.
-    """
-    queryset = Link.objects.all()
-    serializer_class = LinkSerializer
-
-
-class FileViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that handles files.
-    """
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-
-
-class StatisticsViewSet(viewsets.ViewSet):
-    """
-    API endpoint that provides statistics.
-    """
-    queryset = Reference.objects.all()
-
-    def list(self, request):
-        statistics = dict()
-
-        for ref in self.queryset:
-            index = self.reference_index(ref)
-            statistics.setdefault(index, dict(Link=0, File=0))
-            statistics[index][ref.entity.__class__.__name__] += 1
-
-        return Response(statistics)
-
-    def reference_index(self, ref):
-        return ref.entity.created_at.strftime('%Y-%m-%d')
-
-
 class LinkListView(LoginRequiredMixin, ListView):
     """
-    API endpoint that lists links.
+    View that lists links.
     """
     model = Link
     template_name = 'links/list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['now'] = datetime.now()
-        return context
+    def get_queryset(self):
+        return Link.objects.filter(user=self.request.user)
 
 
 class FileListView(LoginRequiredMixin, ListView):
     """
-    API endpoint that lists files.
+    View that lists files.
     """
     model = File
     template_name = 'files/list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    def get_queryset(self):
+        return File.objects.filter(user=self.request.user)
 
 
 class ReferenceListView(LoginRequiredMixin, ListView):
     """"
-    API endpoint that list references.
+    View that list references.
     """
     model = Reference
     template_name = 'references/list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    def get_queryset(self):
+        return Reference.objects.filter(user=self.request.user)
 
 
 class ReferenceCheckView(View):
     """
-    Reference check view.
+    View which checks password of reference.
     """
     model = Reference
     form_class = ReferenceCheckForm
