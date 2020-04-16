@@ -32,13 +32,13 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li>
-                <a href="{% url 'resources_links_list' %}">Links</a>
+                <a href="{% url 'links_list' %}">Links</a>
               </li>
               <li>
-                <a href="{% url 'resources_files_list' %}">Files</a>
+                <a href="{% url 'files_list' %}">Files</a>
               </li>
               <li>
-                <a href="{% url 'resources_references_list' %}">Refrences</a>
+                <a href="{% url 'references_list' %}">Refrences</a>
               </li>
               {% if request.user.is_authenticated %}
               <li>

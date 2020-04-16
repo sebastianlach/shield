@@ -23,7 +23,7 @@ urlresources = [
     url(
         r'^{}/list.html'.format(resource),
         view.as_view(),
-        name='resources_{}_list'.format(resource)
+        name='{}_list'.format(resource)
     )
     for resource, view in dict(
         links=LinkListView,
@@ -36,7 +36,7 @@ urlresources.append(
     url(
         r'^references/(?P<rid>[-\w]+)/',
         ReferenceCheckView.as_view(),
-        name="resources_references_check"
+        name="references_check"
     )
 )
 

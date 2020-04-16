@@ -175,6 +175,6 @@ class ReferencesView(APIView):
 
         context = dict(
             token=token,
-            url=reverse('resources_references_check', args=[reference.rid]),
+            url=reverse('references_check', args=[reference.rid]),
         )
         return Response(context)
