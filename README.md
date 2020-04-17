@@ -6,7 +6,11 @@ Django application for authorizing access to files and links
 virtualenv venv
 source venv/bin/activate
 pip install -e .
-pip install -r tests/requirements.txt
+```
+
+### Testing
+```bash
+python manage.py test
 ```
 
 #### Usage
@@ -17,10 +21,5 @@ invoke --list
 Available tasks:
 ```
   clean   Clean up cache files.
-  tests   Run test cases.
-```
-
-```bash
-invoke clean
-invoke tests
+  tests   Run test cases using nose.
 ```
