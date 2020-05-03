@@ -72,7 +72,11 @@ class Link(models.Model):
 
 class Redirect(models.Model):
     """Redirect model."""
-    reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
+    reference = models.ForeignKey(
+        Reference,
+        related_name='redirects',
+        on_delete=models.CASCADE,
+    )
     datestamp = models.DateField(auto_now=True)
 
 

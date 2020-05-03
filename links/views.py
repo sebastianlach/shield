@@ -1,6 +1,8 @@
 from datetime import datetime
+from collections import defaultdict
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 from django.http import (
     HttpResponse,
     HttpResponseNotFound,
@@ -210,3 +212,27 @@ class ReferenceView(APIView):
                 {'errors': dict(form.errors.items())},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class StatisticsView(APIView):
+    """
+    API endpoint for statistics.
+    """
+
+    def get(self, request, format=None):
+        link_type = ContentType.objects.get(app_label='links', model='link')
+        file_type = ContentType.objects.get(app_label='links', model='file')
+
+        references = Reference.objects.filter(user=self.request.user)\
+            .prefetch_related('redirects')
+
+        stats = defaultdict(lambda: dict(files=0, links=0))
+        for reference in references:
+            if len(reference.redirects.all()):
+                index = reference.timestamp.strftime('%Y-%m-%d')
+                if reference.entity_type == file_type:
+                    stats[index]['files'] += 1
+                if reference.entity_type == link_type:
+                    stats[index]['links'] += 1
+
+        return Response(stats)

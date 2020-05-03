@@ -15,6 +15,7 @@ from links.views import (
     ReferenceCheckView,
     ReferencesView,
     ReferenceView,
+    StatisticsView,
 )
 
 
@@ -32,7 +33,6 @@ urlresources = [
         references=ReferenceListView,
     ).items()
 ]
-
 urlresources.append(
     url(
         r'^references/(?P<rid>[-\w]+)/',
@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'^api/references/(?P<rid>[-\w]+)/', ReferenceView.as_view(),
         name='api_reference'),
     url(r'^api/references/', ReferencesView.as_view()),
+    url(r'^api/statistics/', StatisticsView.as_view()),
     url(r'^api/', include(router.urls)),
 ] + urlresources
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
