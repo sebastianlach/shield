@@ -32,12 +32,6 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li>
-                <a href="{% url 'links_list' %}">Links</a>
-              </li>
-              <li>
-                <a href="{% url 'files_list' %}">Files</a>
-              </li>
-              <li>
                 <a href="{% url 'references_list' %}">Refrences</a>
               </li>
               {% if request.user.is_authenticated %}
@@ -61,25 +55,6 @@
 
       <div class="row">
         {% block content %}
-
-        <div class="span4">
-          <h2>Links</h2>
-          <p>List of available links</p>
-          <p><a class="btn" href="{% url 'resources_links_list' %}">List links &raquo;</a>
-        </div>
-
-        <div class="span4">
-          <h2>Contents</h2>
-          <p>List of available contents</p>
-          <p><a class="btn" href="{% url 'resources_files_list' %}">List files &raquo;</a>
-        </div>
-
-        <div class="span4">
-          <h2>References</h2>
-          <p>List of available references</p>
-          <p><a class="btn" href="{% url 'resources_references_list' %}">List &raquo;</a>
-        </div>
-
         {% endblock %}
       </div>
 

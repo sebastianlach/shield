@@ -68,28 +68,6 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class LinkListView(LoginRequiredMixin, ListView):
-    """
-    View that lists links.
-    """
-    model = Link
-    template_name = 'links/list.html'
-
-    def get_queryset(self):
-        return Link.objects.filter(user=self.request.user)
-
-
-class FileListView(LoginRequiredMixin, ListView):
-    """
-    View that lists files.
-    """
-    model = File
-    template_name = 'files/list.html'
-
-    def get_queryset(self):
-        return File.objects.filter(user=self.request.user)
-
-
 class ReferenceListView(LoginRequiredMixin, ListView):
     """"
     View that list references.
