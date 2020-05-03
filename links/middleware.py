@@ -12,7 +12,7 @@ class UserAgentMiddleware:
             user = request.user
             entity, created = UserAgent.objects.get_or_create(user=user)
             entity.user = user
-            entity.agent = request.headers.get('User-Agent')
+            entity.agent = request.headers.get('User-Agent', '')
             entity.save()
 
         return self.get_response(request)
