@@ -3,19 +3,19 @@ Django application for authorizing access to files and links
 
 #### Setup
 ```bash
-virtualenv venv
-source venv/bin/activate
-cd shield
-pip install -e .
-python manage.py runserver
+docker-compose up
 ```
 
 ### Testing
 ```bash
+virtualenv venv
+source venv/bin/activate
+cd shield
+pip install -e .
 python manage.py test
 ```
 
-#### Usage
+#### Tasks
 ```bash
 invoke --list
 ```
@@ -23,5 +23,5 @@ invoke --list
 Available tasks:
 ```
   clean   Clean up cache files.
-  tests   Run test cases using nose.
+  tests   Run test cases.
 ```
