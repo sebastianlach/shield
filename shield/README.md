@@ -5,7 +5,9 @@ Django application for authorizing access to files and links
 ```bash
 virtualenv venv
 source venv/bin/activate
+cd shield
 pip install -e .
+python manage.py runserver
 ```
 
 ### Testing

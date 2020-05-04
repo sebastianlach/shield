@@ -6,22 +6,10 @@ logger = getLogger(__name__)
 
 
 @task
-def serve(context):
-    """Serve web application."""
-    logger.info("Starting web server")
-    context.run("python manage.py runserver")
-    logger.info("Done")
-
-
-@task
 def tests(context, verbose=True, coverage=True):
     """Run test cases."""
     logger.info("Running test cases")
-    context.run("nosetests {verbose} {coverage}".format(
-        verbose=("--verbose" if verbose else ""),
-        coverage=("--with-coverage" if coverage else ""),
-    ))
-    context.run("pycodestyle --benchmark")
+    context.run("python manage.py test")
     logger.info("Done")
 
 
