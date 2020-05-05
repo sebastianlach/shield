@@ -6,4 +6,6 @@ COPY . .
 RUN pip install --no-cache-dir .
 
 EXPOSE 8000
-CMD python manage.py migrate; python manage.py runserver 0.0.0.0:8000
+CMD python manage.py migrate;\
+    python manage.py loaddata links/fixtures/users.json;\
+    python manage.py runserver 0.0.0.0:8000

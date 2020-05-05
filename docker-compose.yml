@@ -6,6 +6,8 @@ services:
     - "8000:8000"
     links:
     - postgres
+    environment:
+      DJANGO_SETTINGS_MODULE: docker.settings
   postgres:
     image: postgres
     restart: always
