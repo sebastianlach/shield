@@ -10,7 +10,6 @@ docker-compose up
 ```bash
 virtualenv venv
 source venv/bin/activate
-cd shield
 pip install -e .
 python manage.py test
 ```
