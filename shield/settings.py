@@ -79,12 +79,8 @@ WSGI_APPLICATION = 'shield.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shield',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'postgres',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -131,8 +127,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'vars')
-MEDIA_URL = '/vars/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'var')
+MEDIA_URL = '/var/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -142,3 +138,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
+
+STATIC_ROOT = 'var/static'
